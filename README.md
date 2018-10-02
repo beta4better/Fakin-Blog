@@ -11,7 +11,7 @@
 ```c
 git clone
 npm install
-node app.js //使用nodemonapp.js每次修改后就不需要重启项目
+node app.js //使用nodemon app.js每次修改后就不需要重启项目
 ```
 ### 目录及说明
  - config：配置文件（目前只有后台登录账号密码的配置）
