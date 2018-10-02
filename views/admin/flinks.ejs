@@ -1,0 +1,147 @@
+<% include header_2.ejs %>
+<div class="x-nav">
+            <span class="layui-breadcrumb">
+              <a><cite>首页</cite></a>
+              <a><cite>友情链接</cite></a>
+            </span>
+    <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right"
+       href="javascript:location.replace(location.href);" title="刷新"><i class="layui-icon"
+                                                                        style="line-height:30px">ဂ</i></a>
+</div>
+<div class="x-body">
+    <form class="layui-form" style="width:50%">
+        <div class="layui-form-pane" style="margin-top: 15px;">
+            <div class="layui-form-item">
+                <div class="layui-input-inline" style="width:25%">
+                    <input type="text" name="name" placeholder="名称" autocomplete="off" class="layui-input" id="cName">
+                </div>
+                <div class="layui-input-inline" style="width:25%">
+                    <input type="text" name="url" placeholder="链接地址，例如：https://baidu.com" autocomplete="off" class="layui-input"
+                           id="cUrl">
+                </div>
+                <div class="layui-input-inline" style="width:80px">
+                    <div class="layui-btn" onclick="saveCheck()"><i class="layui-icon">&#xe608;</i>增加</div>
+                </div>
+            </div>
+        </div>
+    </form>
+    <table class="layui-table">
+        <thead>
+        <tr>
+            <!--<th id="quanxuan">-->
+            <!--<input type="checkbox" name="" value="">全选/反选-->
+            <!--</th>-->
+            <th>
+                id
+            </th>
+            <th>
+                排序
+            </th>
+            <th>
+                名称
+            </th>
+            <th>
+                链接
+            </th>
+            <th>
+                操作
+            </th>
+        </tr>
+        </thead>
+        <tbody id="x-link">
+        <!--列表-->
+        <% if (flinks) { %>
+        <% for (var i = 0;i < flinks.length;i++) { %>
+        <tr>
+            <td><%= flinks[i]._id %></td>
+            <td><%= [i + 1] %></td>
+            <td><%= flinks[i].name %></td>
+            <td><%= flinks[i].url %></td>
+            <td class="td-manage">
+                <a title="编辑" href="/admin/flinks_edit?id=<%= flinks[i]._id %>" class="ml-5"
+                   style="text-decoration:none">
+                    <i class="layui-icon">&#xe642;</i>
+                </a>
+                <a title="删除" href="javascript:;" onclick="cate_del('<%= flinks[i].name %>')"
+                   style="text-decoration:none">
+                    <i class="layui-icon">&#xe640;</i>
+                </a>
+            </td>
+        </tr>
+        <% } %>
+        <% } %>
+        </tbody>
+    </table>
+</div>
+
+<script src="/public/admin/lib/layui/layui.js" charset="utf-8"></script>
+<script src="/public/admin/js/x-layui.js" charset="utf-8"></script>
+<script>
+    layui.use(['element', 'layer', 'form'], function () {
+        $ = layui.jquery;//jquery
+        lement = layui.element();//面包导航
+        layer = layui.layer;//弹出层
+        form = layui.form();
+    })
+    function cate_del(name) {
+        layer.confirm('确认要删除吗？', function (index) {
+            //发异步删除数据
+            $.ajax({
+                type: 'POST',
+                url: '/admin/flinks_del',
+                data: {'name': name},
+                dataType: 'json',
+                success: function (res) {
+                    console.log(res)
+                    if (res.code === '0') {
+                        layer.msg('已删除!', {icon: 1, time: 1000}, function () {
+//                            window.location.reload();
+                            window.location.replace(location.href)
+                        });
+                    } else {
+                        layer.msg('删除失败!', {icon: 2, time: 1000}, function () {
+                            window.location.replace(location.href)
+                        });
+                    }
+                }
+            })
+
+        });
+    }
+    /*提交*/
+    function saveCheck() {
+        var name = $("#cName").val();
+        var url = $("#cUrl").val();
+        if (name === null || name === '') {
+            layer.alert("名称不能为空", {icon: 2});
+            return false;
+        } else if (url === null || url === '') {
+            layer.alert("链接不能为空", {icon: 2});
+            return false;
+        } else {
+            $.ajax({
+                type: 'POST',
+                url: '/admin/flinks',
+                data: {"name": name, 'url': url},
+                dataType: 'json',
+                success: function (res) {
+                    console.log(res)
+                    if (res.code === '1') {
+                        layer.alert("重复的名称", {icon: 2}, function () {
+                            location.replace(location.href)
+                        });
+
+                    } else if (res.code === '0') {
+                        layer.alert("添加成功", {icon: 6}, function () {
+                            location.replace(location.href)
+                        });
+
+                    }
+                }
+            })
+        }
+
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,208 @@
+<% include header.ejs %>
+<article>
+    <h1 class="t_nav"><span>您现在的位置是：首页 > <%= content.category.name %> > <%= content.title %></span><a href="/"
+                                                                                                      class="n1">网站首页</a><a
+                href="/category/<%= content.category._id %>" class="n2"><%= content.category.name %></a></h1>
+    <div class="infos">
+        <div class="newsview">
+            <h3 class="news_title"><%= content.title %></h3>
+            <div class="news_author">
+                <span class="au01"><a href="/about">
+                        <% if (author) { %>
+                            <%= author %>
+                        <% } %>
+                    </a></span><span
+                        class="au02"><%= moment(content.addTime).format('LL') %></span>
+                <span class="au03">共<b><%= content.views %></b>人围观</span></div>
+            <div class="tags">
+                <% for (var i = 0;i < content.tag.length;i++){ %>
+                    <a href="javascript:;"><%= content.tag[i] %></a>
+                <% } %>
+            </div>
+            <div class="news_about">
+                <strong>简介：</strong>
+                <% if (content.description){ %>
+                    <%= content.description %>
+                <% }else{ %>
+                    暂无描述
+                <% } %>
+            </div>
+            <div class="news_infos">
+                <%- content.content %>
+            </div>
+
+
+        </div>
+        <div class="share"></div>
+        <div class="nextinfo">
+            <% if(prevArticle){ %>
+                <p>上一篇：<a href="/program/<%= prevArticle._id %>"><%= prevArticle.title %></a></p>
+            <% } %>
+            <% if(nextArticle){ %>
+                <p>下一篇：<a href="/program/<%= nextArticle._id %>"><%= nextArticle.title %></a></p>
+            <% } %>
+        </div>
+        <div class="news_pl">
+            <h2>文章评论</h2>
+            <div class="comments-list" style="margin: 20px 30px">
+                <% if(comments) { %>
+                    <% for (var i = 0;i < comments.length;i++){ %>
+                        <% if(comments[i].isSh) { %>
+                            <div class="comment-item" style="overflow: hidden;width: 100%">
+                                <div class="msgtxt"
+                                     style="padding-bottom: 20px;border-bottom: 1px solid #e6e6e6;margin-top: 20px; overflow: hidden">
+                                    <div style="width: 60px;height: 60px;margin-right:15px;float:left;">
+                                        <img src="https://oss.lusongsong.com/com/touxiang/touxiang-2.png"
+                                             style="width: 60px;height: 60px;border-radius: 60px;"
+                                             class="weAppQrcodeFace">
+                                    </div>
+                                    <div class="msgtxtbogy" style="margin-left: 15px; width: 100%">
+                                        <p class="msgname"
+                                           style="color: red;margin-bottom: 15px"><%= comments[i].name %></p>
+                                        <p class="msgarticle" style="margin-bottom: 15px">
+                                            <%= comments[i].content %>
+                                        </p>
+                                        <a class="commentsBtn_a" href="#comments_body" data-cid="<%= comments[i]._id %>"
+                                           data-cname="<%= comments[i].name %>">
+                                            回复
+                                        </a>
+                                    </div>
+
+                                </div>
+                                <div class="comment-item-c" style="margin-left: 20px">
+                                    <% comments[i].reply.forEach((item)=>{ %>
+                                        <% if(item.isSh) { %>
+                                            <div class="msgtxt"
+                                                 style="padding-bottom: 20px;border-bottom: 1px solid #e6e6e6;margin-top: 20px; overflow: hidden">
+                                                <div style="width: 60px;height: 60px;margin-right:15px;float:left;">
+                                                    <img src="https://oss.lusongsong.com/com/touxiang/touxiang-2.png"
+                                                         style="width: 60px;height: 60px;border-radius: 60px;"
+                                                         class="weAppQrcodeFace">
+                                                </div>
+                                                <div class="msgtxtbogy" style="margin-left: 15px; width: 100%">
+                                                    <p class="msgname"
+                                                       style="color: red;margin-bottom: 15px">
+                                                        <%= item.name %>
+                                                        <% if(item.to){%>
+                                                            <span style="color:#000">回复给：</span><%= item.to %>
+                                                        <%}%>
+                                                    </p>
+                                                    <p class="msgarticle" style="margin-bottom: 15px">
+                                                        <%= item.content %>
+                                                    </p>
+                                                    <a class="commentsBtn_a" href="#comments_body"
+                                                       data-cid="<%= comments[i]._id %>"
+                                                       data-cname="<%= item.name %>">
+                                                        回复
+                                                    </a>
+                                                </div>
+
+                                            </div>
+                                        <% } %>
+                                    <% }) %>
+                                </div>
+                            </div>
+                        <% } %>
+                    <% } %>
+                <% } %>
+            </div>
+            <div class="layui-form-pane" style=" margin: 50px 30px;" id="comments_body">
+                <input type="hidden" id="article_title" value="<%= content.title %>">
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">昵称</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="commentsName" id="commentsName" lay-verify="required" placeholder="请输入"
+                               autocomplete="off"
+                               class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item layui-form-text">
+                    <label class="layui-form-label">描述</label>
+                    <div class="layui-input-block">
+                        <textarea placeholder="请输入内容" class="layui-textarea" id="commentsBody"></textarea>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <button class="layui-btn" lay-submit="" lay-filter="" id="commentsBtn">提交</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="sidebar">
+        <% include right_slider.ejs %>
+    </div>
+</article>
+
+<% include footer.ejs %>
+<script src="/public/js/nav.js"></script>
+<script src="/public/admin/lib/layui/layui.js" charset="utf-8"></script>
+<script type="text/javascript">
+    layui.use(['layer'], function () {
+        $ = layui.jquery;
+        layer = layui.layer;
+        $('.commentsBtn_a').click(function (e) {
+            var target = $(this);
+            var cName = target.data('cname');
+            var cId = target.data('cid');
+            if ($('#replyName').length > 0) {
+                $('#replyName').val(cName)
+            } else {
+                $('<input>').attr({
+                    type: 'hidden',
+                    name: 'comment[name]',
+                    value: cName,
+                    id: 'replyName'
+                }).appendTo('#comments_body')
+            }
+            if ($('#replyId').length > 0) {
+                $('#replyId').val(cId)
+            } else {
+                $('<input>').attr({
+                    type: 'hidden',
+                    name: 'comment[cid]',
+                    value: cId,
+                    id: 'replyId'
+                }).appendTo('#comments_body')
+            }
+        })
+        $('#commentsBtn').click(function () {
+            var articleId = `<%- content.id %>`;
+            var name = $('#commentsName').val();
+            var body = $('#commentsBody').val();
+            var cid = $('#replyId').val();
+            var cname = $('#replyName').val();
+            var title = $('#article_title').val();
+            if (name === '' || name === null) {
+                layer.alert('昵称不能为空')
+                return
+            } else {
+                $.ajax({
+                    type: 'POST',
+                    url: '/admin/comments',
+                    data: {
+                        'title': title,
+                        'name': name,
+                        'body': body,
+                        'articleId': articleId,
+                        "cid": cid,
+                        'cname': cname
+                    },
+                    dataType: 'json',
+                    success: function (res) {
+                        if (res.code === '0') {
+                            layer.msg('提交成功，等待审核', {icon: 1}, function () {
+//                                location.replace(location.href)
+                                window.location.reload()
+                            });
+                        }
+                    }
+
+                })
+            }
+
+        })
+    })
+</script>
+</body>
+</html>

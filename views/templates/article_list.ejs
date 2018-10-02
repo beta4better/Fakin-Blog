@@ -1,0 +1,56 @@
+<% include header.ejs %>
+<article>
+    <h1 class="t_nav"><span>不要轻易放弃。学习成长的路上，我们长路漫漫，只因学无止境。 </span><a href="/" class="n1">网站首页</a>
+        <a href="#" class="n2">
+            <%= currentCategory %>
+        </a>
+    </h1>
+    <div class="blogs">
+        <div class="mt20"></div>
+        <% for (var i = 0;i < article.length;i++) { %>
+        <li>
+            <span class="blogpic">
+                <a href="/program/<%= article[i]._id %>">
+               <img src="<%= article[i].thumbnail %>">
+                </a>
+            </span>
+            <h3 class="blogtitle">
+                <a href="/program/<%= article[i]._id %>"><%= article[i].title %></a>
+            </h3>
+            <div class="bloginfo">
+                <p><%= article[i].description %></p>
+            </div>
+            <div class="autor"><span class="lm"><a href="/category/<%= article[i].category._id %>"
+                                                   title="<%= article[i].category.name %>" target="_blank"
+                                                   class="classname"><%= article[i].category.name %></a></span><span
+                        class="dtime"><%= moment(article[i].addTime).format('LL') %></span><span class="viewnum">浏览（<a
+                            href="/program/<%= article[i]._id %>"><%= article[i].views %></a>）</span><span
+                        class="readmore"><a href="/program/<%= article[i]._id %>">阅读原文</a></span></div>
+        </li>
+        <% } %>
+        <div class="pagelist">
+            <% if (pages){ %>
+            <% if (page > 1 && page !== 2){ %>
+            <a href="?page=<%= page - 1 %>">上一页</a>
+            <% } %>
+
+            <% if (page === 2){ %>
+            <% if (catalog){ %>
+            <a href="/<%= catalog %>/<%= id %>">上一页</a>
+            <% } %>
+            <% } %>
+
+            <a href="javascript:;"><b><%= page %></b></a>
+            <% if (page !== pages){ %>
+            <a href="?page=<%= page + 1 %>">下一页</a>
+            <a href="?page=<%= pages %>">尾页</a>
+            <% } %>
+            <span>一共<%= pages %>页 </span>
+            <% } %>
+        </div>
+    </div>
+    <div class="sidebar">
+        <% include right_slider.ejs %>
+    </div>
+</article>
+<% include footer.ejs %>

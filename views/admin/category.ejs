@@ -1,0 +1,201 @@
+<% include header_2.ejs %>
+<div class="x-nav">
+            <span class="layui-breadcrumb">
+              <a><cite>首页</cite></a>
+              <a><cite>分类列表</cite></a>
+            </span>
+    <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right"
+       href="javascript:location.replace(location.href);" title="刷新"><i class="layui-icon"
+                                                                        style="line-height:30px">ဂ</i></a>
+</div>
+<div class="x-body">
+    <form class="layui-form" style="width:50%">
+        <div class="layui-form-pane" style="margin-top: 15px;">
+            <div class="layui-form-item">
+                <div class="layui-input-inline" style="width:25%">
+                    <input type="text" name="name" placeholder="分类名" autocomplete="off" class="layui-input" id="cName">
+                </div>
+                <div class="layui-input-inline" style="width:25%">
+                    <input type="text" name="name" placeholder="别名，例如：about" autocomplete="off" class="layui-input" id="bName">
+                </div>
+                <div class="layui-input-inline" style="width:80px">
+                    <div class="layui-btn" onclick="saveCheck()"><i class="layui-icon">&#xe608;</i>增加</div>
+                </div>
+            </div>
+        </div>
+    </form>
+    <!--<div class="layui-input-block" style="margin-left: 0">-->
+        <!--注意：别名只支持英文，并且只支持已有的模板（about,）-->
+    <!--</div>-->
+    <xblock>
+        <button class="layui-btn layui-btn-danger" onclick="delAll()"><i class="layui-icon">&#xe640;</i>批量删除</button>
+        <span class="x-right" style="line-height:40px">共有数据：<%= count %> 条</span></xblock>
+    <table class="layui-table">
+        <thead>
+        <tr>
+            <th id="quanxuan">
+                <input type="checkbox" name="" value="">全选/反选
+            </th>
+            <th>
+                id
+            </th>
+            <th>
+                排序
+            </th>
+            <th>
+                分类名
+            </th>
+            <th>
+                别名
+            </th>
+            <th>
+                操作
+            </th>
+        </tr>
+        </thead>
+        <tbody id="x-link">
+        <!--列表-->
+        <% if (cate) { %>
+        <% for (var i = 0;i < cate.length;i++) { %>
+        <tr>
+            <td>
+                <input type="checkbox" value="<%= cate[i]._id %>" name="check">
+            </td>
+
+            <td><%= cate[i]._id %></td>
+            <td><%= [i + 1] %></td>
+            <td><%= cate[i].name %></td>
+            <td><%= cate[i].alias %></td>
+            <td class="td-manage">
+                <a title="编辑" href="/admin/cate_edit?id=<%= cate[i]._id %>" class="ml-5"
+                   style="text-decoration:none">
+                    <i class="layui-icon">&#xe642;</i>
+                </a>
+                <a title="删除" href="javascript:;" onclick="cate_del('<%= cate[i].name %>')"
+                   style="text-decoration:none">
+                    <i class="layui-icon">&#xe640;</i>
+                </a>
+            </td>
+        </tr>
+        <% } %>
+        <% } %>
+        </tbody>
+    </table>
+</div>
+
+<script src="/public/admin/lib/layui/layui.js" charset="utf-8"></script>
+<script src="/public/admin/js/x-layui.js" charset="utf-8"></script>
+<script>
+    layui.use(['element', 'layer', 'form'], function () {
+        $ = layui.jquery;//jquery
+        lement = layui.element();//面包导航
+        layer = layui.layer;//弹出层
+        form = layui.form();
+        //全选和返选
+        var check = $("#x-link input[type='checkbox']");
+        $("#quanxuan").click(function () {//全选
+            check.each(function (index, item) {
+                console.log(item.checked)
+                if (item.checked) {
+                    item.checked = false
+                } else {
+                    item.checked = true
+                }
+
+            });
+        })
+
+    })
+    function cate_del(name) {
+        layer.confirm('确认要删除吗？', function (index) {
+            //发异步删除数据
+            $.ajax({
+                type: 'POST',
+                url: '/admin/cate_del',
+                data: {'name': name},
+                dataType: 'json',
+                success: function (res) {
+                    console.log(res)
+                    if (res.code === '0') {
+                        layer.msg('已删除!', {icon: 1, time: 1000}, function () {
+//                            window.location.reload();
+                            window.location.replace(location.href)
+                        });
+                    } else {
+                        layer.msg('删除失败!', {icon: 2, time: 1000}, function () {
+                            window.location.replace(location.href)
+                        });
+                    }
+                }
+            })
+
+        });
+    }
+    //批量删除提交
+    function delAll() {
+        let data = [];
+        $.each($('input[name="check"]:checked'), function (index, item) {
+            data.push(item.value)
+        })
+        if (!data.length) {
+            layer.msg('请选中需要删除的分类', {icon: 1});
+            return
+        }
+        layer.confirm('确认要删除吗？', function (index) {
+            //捉到所有被选中的，发异步进行删除
+            console.log({'id': data})
+            $.ajax({
+                type: 'POST',
+                url: '/admin/cate_del_all',
+                data: {'id': data},
+                dataType: 'json',
+                success: function (res) {
+                    if (res.code === '0') {
+                        layer.msg('删除成功', {icon: 1}, function () {
+                            window.location.replace(location.href)
+                        });
+                    }
+                }
+
+            })
+
+
+        });
+    }
+    /*提交*/
+    function saveCheck() {
+        var name = $("#cName").val();
+        var alias = $('#bName').val()
+        if (name === null || name === '') {
+            layer.alert("分类名不能为空", {icon: 2});
+            return false;
+        } else if (bName === null || bName === '') {
+            layer.alert("别名不能为空", {icon: 2});
+            return false;
+        } else {
+            $.ajax({
+                type: 'POST',
+                url: '/admin/category',
+                data: {"name": name, 'alias': alias},
+                dataType: 'json',
+                success: function (res) {
+                    console.log(res)
+                    if (res.code === '1') {
+                        layer.alert("重复的分类名", {icon: 2}, function () {
+                            location.replace(location.href)
+                        });
+
+                    } else if (res.code === '0') {
+                        layer.alert("添加成功", {icon: 6}, function () {
+                            location.replace(location.href)
+                        });
+
+                    }
+                }
+            })
+        }
+
+    }
+</script>
+</body>
+</html>

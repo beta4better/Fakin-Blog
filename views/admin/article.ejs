@@ -1,0 +1,206 @@
+<% include header_2.ejs %>
+<div class="x-nav">
+            <span class="layui-breadcrumb">
+              <a><cite>首页</cite></a>
+              <a><cite>文章管理</cite></a>
+            </span>
+    <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right"
+       href="javascript:location.replace(location.href);" title="刷新"><i class="layui-icon"
+                                                                        style="line-height:30px">ဂ</i></a>
+</div>
+<div class="x-body">
+    <form class="layui-form" action="" style="width:800px">
+        <div class="layui-form-pane" style="margin-top: 15px;">
+            <div class="layui-form-item">
+                <div class="layui-input-inline" style="width:60%">
+                    <input type="text" name="username" placeholder="标题" autocomplete="off" class="layui-input">
+                </div>
+                <div class="layui-input-inline" style="width:80px">
+                    <button class="layui-btn" lay-submit="" lay-filter="sreach"><i class="layui-icon">&#xe615;</i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+    <xblock>
+        <button class="layui-btn layui-btn-danger" onclick="delAll()"><i class="layui-icon">&#xe640;</i>批量删除</button>
+        <a class="layui-btn" href="/admin/article_add"><i class="layui-icon">&#xe608;</i>添加
+        </a>
+        <span class="x-right" style="line-height:40px">共有数据：<%= count %> 条</span>
+        <span id="pageLimit" style="display: none"><%= count %></span>
+    </xblock>
+    <table class="layui-table">
+        <thead>
+        <tr>
+            <th id="quanxuan">
+                <input type="checkbox" name="" value="">
+            </th>
+            <!--<th>-->
+                <!--ID-->
+            <!--</th>-->
+            <th>
+                标题
+            </th>
+            <th>
+                分类
+            </th>
+
+            <th>
+                标签
+            </th>
+            <th>
+                评论数
+            </th>
+            <th>
+                阅读量
+            </th>
+            <th>
+                更新时间
+            </th>
+
+            <th>
+                操作
+            </th>
+        </tr>
+        </thead>
+        <tbody id="x-link">
+        <% for (var i = 0; i < article.length; i++) { %>
+        <tr>
+            <td>
+                <input type="checkbox" value="<%= article[i]._id %>" name="check">
+            </td>
+
+            <td>
+                <a href="/program/<%= article[i]._id %>" target="_blank">
+                    <%= article[i].title %>
+                </a>
+            </td>
+            <td>
+                <% if(article[i].category){ %>
+                <%= article[i].category.name %>
+                <% } %>
+            </td>
+            <td>
+                <% if(article[i].tag){ %>
+                <%= article[i].tag %>
+                <% } %>
+            </td>
+            <td>
+                5
+            </td>
+            <td>
+                <%= article[i].views %>
+            </td>
+            <td>
+                <%= moment(article[i].addTime).format('LLL') %>
+            </td>
+            <td class="td-manage">
+                <a title="编辑" href="/admin/article_edit?id=<%= article[i]._id %>" class="ml-5"
+                   style="text-decoration:none">
+                    <i class="layui-icon">&#xe642;</i>
+                </a>
+                <a title="删除" href="javascript:;"
+                   onclick="article_del('<%= article[i].title %>','<%= article[i]._id %>')"
+                   style="text-decoration:none">
+                    <i class="layui-icon">&#xe640;</i>
+                </a>
+            </td>
+        </tr>
+        <% } %>
+        </tbody>
+    </table>
+
+    <div id="page">
+        <% if(article.length) { %>
+        <a class="layui-btn" href="/admin/article?page=<%= page - 1 %>">上一页</a>
+        <a class="layui-btn" href="/admin/article?page=<%= page + 1 %>">下一页</a>
+        <span>每页展示20条，当前页面：<%= page %></span>
+        <% } %>
+    </div>
+</div>
+<script src="/public/admin/lib/layui/layui.js" charset="utf-8"></script>
+<script src="/public/admin/js/x-layui.js" charset="utf-8"></script>
+<script>
+    layui.use(['layer'], function () {
+        $ = layui.jquery;//jquery
+//        laydate = layui.laydate;//日期插件
+//        lement = layui.element();//面包导航
+//        laypage = layui.laypage;//分页
+        layer = layui.layer;//弹出层
+        //以上模块根据需要引入
+        //全选和返选
+        var check = $("#x-link input[type='checkbox']");
+        $("#quanxuan").click(function () {//全选
+            check.each(function (index, item) {
+                console.log(item.checked)
+                if (item.checked) {
+                    item.checked = false
+                } else {
+                    item.checked = true
+                }
+
+            });
+        })
+
+    });
+    //获取当前文章的评论
+
+    //批量删除提交
+    function delAll() {
+        let data = [];
+        $.each($('input[name="check"]:checked'), function (index, item) {
+            data.push(item.value)
+        })
+        if (!data.length) {
+            layer.msg('请选中需要删除的分类', {icon: 1});
+            return
+        }
+        layer.confirm('确认要删除吗？', function (index) {
+            //捉到所有被选中的，发异步进行删除
+            $.ajax({
+                type: 'POST',
+                url: '/admin/article_del_all',
+                data: {'id': data},
+                dataType: 'json',
+                success: function (res) {
+                    if (res.code === '0') {
+                        layer.msg('删除成功', {icon: 1}, function () {
+                            window.location.replace(location.href)
+                        });
+                    }
+                }
+
+            })
+
+
+        });
+    }
+
+    /*删除*/
+    function article_del(title, id) {
+        layer.confirm('确认要删除吗？', function (index) {
+            //发异步删除数据
+            $.ajax({
+                type: 'POST',
+                url: '/admin/article_del',
+                data: {'title': title, 'id': id},
+                dataType: 'json',
+                success: function (res) {
+                    console.log(res)
+                    if (res.code === '0') {
+                        layer.msg('已删除!', {icon: 1, time: 1000}, function () {
+                            window.location.replace(location.href)
+                        });
+                    } else {
+                        layer.msg('删除失败!', {icon: 2, time: 1000}, function () {
+                            window.location.replace(location.href)
+                        });
+                    }
+                }
+            })
+        });
+    }
+
+</script>
+</body>
+</html>

@@ -1,0 +1,190 @@
+<% include header_2.ejs %>
+<div class="x-body">
+    <div class="layui-form layui-form-pane" id="aForm">
+        <div class="layui-input-block" style="display: none">
+            <input type="text" id="L_id" name="id" value="<%= article._id %>">
+        </div>
+        <div class="layui-form-item">
+            <label for="L_title" class="layui-form-label">
+                标题
+            </label>
+            <div class="layui-input-block">
+                <input type="text" id="L_title" name="title" required lay-verify="title" autocomplete="off"
+                       class="layui-input" value="<%= article.title %>">
+            </div>
+        </div>
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">简介</label>
+            <div class="layui-input-block">
+                <textarea placeholder="请输入内容" class="layui-textarea" id="des"><%= article.description %></textarea>
+            </div>
+        </div>
+        <div class="layui-form-item layui-form-text">
+            <label for="L_content" class="layui-form-label">
+                描述
+            </label>
+            <div class="layui-input-block">
+                        <textarea id="L_content" name="content"
+                                  placeholder="请输入内容" class="layui-textarea fly-editor"
+                                  style="height: 260px;"><%= article.content %></textarea>
+            </div>
+
+        </div>
+        <div class="layui-form-item">
+            <div class="site-demo-upload">
+                <img id="LAY_demo_upload" src="<%= article.thumbnail %>">
+                <div class="site-demo-upbar">
+                    <input type="file" name="file" multiple="multiple" class="layui-upload-file" id="test">
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-inline">
+
+                <label class="layui-form-label">
+                    所在栏目
+                </label>
+                <div class="layui-input-block">
+                    <select lay-verify="required" name="cid" id="cid">
+                        <% if (category){ %>
+
+                        <% for(var i = 0;i < category.length;i++){ %>
+
+                        <% if (article.category.name == category[i].name){ %>
+                        <option value="<%= category[i]._id %>" selected>
+                            <%= category[i].name %>
+                        </option>
+                        <% } else { %>
+                        <option value="<%= category[i]._id %>">
+                            <%= category[i].name %>
+                        </option>
+                        <% } %>
+
+                        <% } %>
+
+                        <% } %>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label for="L_tags" class="layui-form-label">
+                标签
+            </label>
+            <div class="layui-input-block">
+                <input type="text" id="L_tags" name="tags" required lay-verify="tags"
+                       autocomplete="off" class="layui-input" value="<%= article.tag %>">
+            </div>
+            <p style="margin-top: 15px;">提示：多个标签用英文‘,’分开</p>
+        </div>
+        <div class="layui-form-item">
+            <button class="layui-btn" id="fbBtn">
+                立即发布
+            </button>
+        </div>
+    </div>
+</div>
+<script src="/public/admin/lib/layui/layui.js" charset="utf-8">
+</script>
+<script src="/public/admin/js/x-layui.js" charset="utf-8">
+</script>
+<script>
+    layui.use(['form', 'layer', 'layedit', 'upload'], function () {
+        $ = layui.jquery;
+        var form = layui.form()
+            , layer = layui.layer
+            , layedit = layui.layedit
+            , LAY_demo_upload = $('#LAY_demo_upload')
+
+
+        //缩略图图片上传
+        layui.upload({
+            url: '/api/uploader'
+            , elem: '#test' //指定原始元素，默认直接查找class="layui-upload-file"
+            , method: 'POST' //上传接口的http类型
+            , success: function (res) {
+                if (res.code === 0) {
+                    LAY_demo_upload.attr('src', res.data.src);
+                }
+
+            }
+        });
+        layedit.set({
+            uploadImage: {
+                url: "/api/uploader",
+                type: 'POST' //默认post
+            }
+        })
+        //创建一个编辑器
+        var edIndex = layedit.build('L_content');
+
+        //监听提交
+        $('#fbBtn').on('click', function () {
+            let img = $('#LAY_demo_upload').attr('src')
+            console.log(img)
+            let title = $('#L_title').val()
+            let id = $('#L_id').val()
+            let category = $('#cid').val()
+            let des = $('#des').val()
+            let tags = $('#L_tags').val()
+            let content = layedit.getContent(edIndex)
+            if (title === '' || title === null) {
+                layer.msg("标题不能为空", {icon: 2, time: 1500});
+                return
+            }
+            if (des === '' || des === null) {
+                layer.msg("简介不能为空", {icon: 2, time: 1500});
+                return
+            }
+            //发异步，把数据提交给后端
+            layer.open({
+                type: 1,
+                content: '<div style="padding: 20px 100px;">' + '确定要发布吗' + '</div>',
+                btnAlign: 'c',
+                btn: ['确定', '取消'],
+                yes: function () {
+                    $.ajax({
+                        type: 'POST',
+                        url: '/admin/article_edit',
+                        data: {
+                            'id': id,
+                            'img': img,
+                            'title': title,
+                            'category': category,
+                            'des': des,
+                            'content': content,
+                            "tags": tags
+                        },
+                        dataType: 'json',
+                        success: function (res) {
+                            console.log(res)
+                            if (res.code === '0') {
+                                layer.msg("修改成功", {icon: 6, time: 1500}, function () {
+                                    layer.closeAll()
+                                    window.location.href = document.referrer;
+                                });
+                            }
+                            if (res.code === '1') {
+                                layer.msg("数据库中有相同文章", {icon: 2, time: 1500}, function () {
+                                    layer.closeAll()
+                                });
+
+                            }
+                        }
+                    })
+                },
+                no: function () {
+                    layer.closeAll()
+                }
+            })
+
+            return false;
+        });
+
+    });
+
+</script>
+
+</body>
+
+</html>

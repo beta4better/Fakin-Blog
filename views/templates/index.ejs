@@ -1,0 +1,81 @@
+<%- include header.ejs %>
+<article>
+    <div class="blogs">
+        <% for (var i = 0;i < article.length;i++) { %>
+        <li>
+            <span class="blogpic">
+                <a href="/program/<%= article[i]._id %>">
+                <img src="<%= article[i].thumbnail %>">
+                </a>
+            </span>
+            <h3 class="blogtitle">
+                <a href="/program/<%= article[i]._id %>"><%= article[i].title %></a>
+            </h3>
+            <div class="bloginfo">
+                <p><%= article[i].description %></p>
+            </div>
+            <div class="autor"><span class="lm"><a href="/category/<%= article[i].category._id %>"
+                                                   title="<%= article[i].category.name %>" target="_blank"
+                                                   class="classname"><%= article[i].category.name %></a></span><span
+                        class="dtime"><%= moment(article[i].addTime).format('LL') %></span><span class="viewnum">浏览（<a
+                            href="/program/<%= article[i]._id %>"><%= article[i].views %></a>）</span><span
+                        class="readmore"><a href="/program/<%= article[i]._id %>">阅读原文</a></span></div>
+        </li>
+        <% } %>
+        <div class="pagelist">
+            <% if (page > 1 && page !== 2){ %>
+            <a href="/?page=<%= page - 1 %>">上一页</a>
+            <% } %>
+            <% if (page === 2){ %>
+            <a href="/">上一页</a>
+            <% } %>
+            <a href="javascript:;"><b><%= page %></b></a>
+            <% if (page !== pages){ %>
+            <a href="/?page=<%= page + 1 %>">下一页</a>
+            <a href="/?page=<%= pages %>">尾页</a>
+            <% } %>
+            <span>一共<%= pages %>页 </span>
+        </div>
+    </div>
+    <div class="sidebar">
+        <div class="about" style="margin-bottom: 10px;">
+            <div class="avatar"><img src="/public/images/avatar.jpg" alt=""></div>
+            <p class="abname">Fakin</p>
+            <p class="abposition">Web前端设计师、网页设计</p>
+            <div class="abtext">天行健,君子以自强不息。地势坤,君子以厚德载物。</div>
+        </div>
+        <!--<div class="search">-->
+        <!--<form action="/e/search/index.php" method="post" name="searchform" id="searchform">-->
+        <!--<input name="keyboard" id="keyboard" class="input_text" value="请输入关键字"-->
+        <!--style="color: rgb(153, 153, 153);"-->
+        <!--onfocus="if(value=='请输入关键字'){this.style.color='#000';value=''}"-->
+        <!--onblur="if(value==''){this.style.color='#999';value='请输入关键字'}" type="text">-->
+        <!--<input name="show" value="title" type="hidden">-->
+        <!--<input name="tempid" value="1" type="hidden">-->
+        <!--<input name="tbname" value="news" type="hidden">-->
+        <!--<input name="Submit" class="input_submit" value="搜索" type="submit">-->
+        <!--</form>-->
+        <!--</div>-->
+        <!--<div class="cloud">-->
+        <!--<h2 class="hometitle">标签云</h2>-->
+        <!--<ul>-->
+        <!--<a href="/">陌上花开</a> <a href="/">校园生活</a> <a href="/">html5</a> <a href="/">SumSung</a> <a-->
+        <!--href="/">青春</a> <a href="/">温暖</a> <a href="/">阳光</a> <a href="/">三星</a><a href="/">索尼</a> <a-->
+        <!--href="/">华维荣耀</a> <a href="/">三星</a> <a href="/">索尼</a>-->
+        <!--</ul>-->
+        <!--</div>-->
+        <% include right_slider.ejs %>
+
+        <div class="links">
+            <h2 class="hometitle">友情链接</h2>
+            <ul>
+                <% for (var i = 0; i < flinks.length; i++) { %>
+                <li><a href="<%= flinks[i].url %>" title="<%= flinks[i].name %>"
+                       target="_blank"><%= flinks[i].name %></a></li>
+                <% } %>
+            </ul>
+        </div>
+
+    </div>
+</article>
+<% include footer.ejs %>

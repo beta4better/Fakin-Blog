@@ -1,0 +1,98 @@
+<% include header_2.ejs %>
+<div class="x-body">
+    <form class="layui-form">
+        <div class="layui-form-item">
+            <label for="cid" class="layui-form-label" style="display:none;">
+                id
+            </label>
+            <div class="layui-input-inline" style="display:none;">
+                <input type="text" id="cid" name="cid" required="" lay-verify="required"
+                       autocomplete="off" value="<%= flinks._id %>" disabled="" class="layui-input">
+            </div>
+            <label for="cname" class="layui-form-label">
+                旧名称
+            </label>
+            <div class="layui-input-inline">
+                <input type="text" id="cname" name="cname" required="" lay-verify="required"
+                       autocomplete="off" value="<%= flinks.name %>" disabled="" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label for="cName" class="layui-form-label">
+                <span class="x-red">*</span>名称
+            </label>
+            <div class="layui-input-inline">
+                <input type="text" id="cName" name="cName" required="" lay-verify="required"
+                       autocomplete="off" class="layui-input">
+            </div>
+
+        </div>
+        <div class="layui-form-item">
+            <label for="cname" class="layui-form-label">
+                <span class="x-red">*</span>链接地址
+            </label>
+            <div class="layui-input-inline">
+                <input type="text" id="cUrl" name="cName" required="" lay-verify="required"
+                       autocomplete="off" class="layui-input" value="<%= flinks.url %>">
+            </div>
+            <div class="layui-input-inline" style="height: 38px;line-height: 38px;color: #919191">格式：www.baidu.com
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label for="L_repass" class="layui-form-label">
+            </label>
+            <div class="layui-btn" onclick="saveCheck()">
+                保存
+            </div>
+        </div>
+    </form>
+</div>
+<script src="/public/admin/lib/layui/layui.js" charset="utf-8">
+</script>
+<script src="/public/admin/js/x-layui.js" charset="utf-8">
+</script>
+<script>
+    layui.use(['form', 'layer'], function () {
+        $ = layui.jquery;
+    });
+    /*提交*/
+    function saveCheck() {
+        var name = $("#cName").val();
+        var url = $("#cUrl").val();
+        var id = $("#cid").val();
+        if (name === null || name === '') {
+            layer.msg('名称不能为空', {time: 1500, icon: 2});
+            return false;
+        } else if (url === null || url === '') {
+            layer.msg('链接不能为空', {time: 1500, icon: 2});
+            return false;
+        }
+        else {
+            $.ajax({
+                type: 'POST',
+                url: '/admin/flinks_edit',
+                data: {"name": name, 'url': url, "id": id},
+                dataType: 'json',
+                success: function (res) {
+                    console.log(res)
+                    if (res.code === '0') {
+                        layer.msg('修改成功', {icon: 6}, function () {
+                            window.location.href = document.referrer;
+                        });
+
+                    } else if (res.code === '1') {
+                        layer.msg('已存在同名链接', {icon: 2});
+                    }else if (res.code === '3') {
+                        layer.msg('链接地址不能为空', {icon: 2});
+                    }
+                }
+            })
+            return true;
+        }
+
+    }
+</script>
+
+</body>
+
+</html>

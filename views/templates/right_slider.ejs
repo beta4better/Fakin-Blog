@@ -1,0 +1,20 @@
+<div class="cloud">
+    <h2 class="hometitle">标签云</h2>
+    <ul>
+        <% for (var i = 0; i < tags.length; i++) { %>
+        <a href="/tag/<%= tags[i]._id %>"><%= tags[i].name %></a>
+        <% } %>
+    </ul>
+</div>
+<div class="paihang">
+    <h2 class="hometitle">点击排行</h2>
+    <ul>
+        <% for (var i = 0; i < pArticle.length; i++) { %>
+        <li><b><a href="/program/<%= pArticle[i]._id %>" target="_blank"><%= pArticle[i].title %></a></b>
+            <i> <img src="<%= pArticle[i].thumbnail %>"></i>
+            <p><%= pArticle[i].description %>
+            </p>
+        </li>
+        <% } %>
+    </ul>
+</div>

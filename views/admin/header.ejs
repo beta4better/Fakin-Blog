@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>F-blog后台管理系统</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="stylesheet" href="/public/admin/css/x-admin.css" media="all">
+</head>
+<body>
+<div class="layui-layout layui-layout-admin">
+    <div class="layui-header header header-demo">
+        <div class="layui-main">
+            <a class="logo" href="./">
+               F-blog
+            </a>
+            <ul class="layui-nav" lay-filter="">
+                <li class="layui-nav-item"><img src="/public/admin/images/logo.png" class="layui-circle"
+                                                style="border: 2px solid #A9B7B7;" width="35px" alt=""></li>
+                <li class="layui-nav-item">
+                    <a href="javascript:;">admin</a>
+                    <dl class="layui-nav-child"> <!-- 二级菜单 -->
+                        <dd><a href="/admin/logout">退出</a></dd>
+                    </dl>
+                </li>
+                <!-- <li class="layui-nav-item">
+                  <a href="" title="消息">
+                      <i class="layui-icon" style="top: 1px;">&#xe63a;</i>
+                  </a>
+                  </li> -->
+                <li class="layui-nav-item x-index"><a href="/">前台首页</a></li>
+            </ul>
+        </div>
+    </div>

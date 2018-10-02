@@ -1,0 +1,79 @@
+<% include header_2.ejs %>
+<div class="x-body">
+    <form class="layui-form">
+        <div class="layui-form-item">
+            <label for="cid" class="layui-form-label" style="display:none;">
+                id
+            </label>
+            <div class="layui-input-inline" style="display:none;">
+                <input type="text" id="cid" name="cid" required="" lay-verify="required"
+                       autocomplete="off" value="<%= tags._id %>" disabled="" class="layui-input">
+            </div>
+            <label for="cname" class="layui-form-label">
+                旧名称
+            </label>
+            <div class="layui-input-inline">
+                <input type="text" id="cname" name="cname" required="" lay-verify="required"
+                       autocomplete="off" value="<%= tags.name %>" disabled="" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label for="cName" class="layui-form-label">
+                <span class="x-red">*</span>标签名
+            </label>
+            <div class="layui-input-inline">
+                <input type="text" id="cName" name="cName" required="" lay-verify="required"
+                       autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label for="L_repass" class="layui-form-label">
+            </label>
+            <div class="layui-btn" onclick="saveCheck()">
+                保存
+            </div>
+        </div>
+    </form>
+</div>
+<script src="/public/admin/lib/layui/layui.js" charset="utf-8">
+</script>
+<script src="/public/admin/js/x-layui.js" charset="utf-8">
+</script>
+<script>
+    layui.use(['form', 'layer'], function () {
+        $ = layui.jquery;
+    });
+    /*提交*/
+    function saveCheck() {
+        var name = $("#cName").val();
+        var id = $("#cid").val();
+        if (name === null || name === '') {
+            layer.msg('标签不能为空', {time: 1500, icon: 6});
+            return false;
+        } else {
+            $.ajax({
+                type: 'POST',
+                url: '/admin/tags_edit',
+                data: {"name": name, 'id': id},
+                dataType: 'json',
+                success: function (res) {
+                    console.log(res)
+                    if (res.code === '0') {
+                        layer.alert('修改成功', {icon: 6}, function () {
+                            window.location.href = document.referrer;
+                        });
+
+                    }else if(res.code === '1'){
+                        layer.alert('已存在同名标签', {icon: 2});
+                    }
+                }
+            })
+            return true;
+        }
+
+    }
+</script>
+
+</body>
+
+</html>
