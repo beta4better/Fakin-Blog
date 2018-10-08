@@ -752,7 +752,7 @@ router.get('/comments', (req, res) => {
             pageIndex = Math.max(pageIndex, 1);
             //这一步算法是：通过获取req.query.page的值来确定返回数组的个数及返回数组中哪几项
             var _comments = commentCount.sort(compare).reverse().slice((pageIndex - 1) * pageSize, pageSize * pageIndex);
-            // console.log(_comments)
+            console.log(_comments)
             res.render('admin/comment', {
                 count: commentCount.length,
                 comments: _comments,

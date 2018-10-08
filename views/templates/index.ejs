@@ -23,6 +23,7 @@
         </li>
         <% } %>
         <div class="pagelist">
+            <% if (pages){ %>
             <% if (page > 1 && page !== 2){ %>
             <a href="/?page=<%= page - 1 %>">上一页</a>
             <% } %>
@@ -35,15 +36,18 @@
             <a href="/?page=<%= pages %>">尾页</a>
             <% } %>
             <span>一共<%= pages %>页 </span>
+            <% } %>
         </div>
     </div>
     <div class="sidebar">
+        <% if (about){ %>
         <div class="about" style="margin-bottom: 10px;">
-            <div class="avatar"><img src="/public/images/avatar.jpg" alt=""></div>
-            <p class="abname">Fakin</p>
-            <p class="abposition">Web前端设计师、网页设计</p>
+            <div class="avatar"><img src="<%=about.thumbnail%>" alt=""></div>
+            <p class="abname"><%=about.author%></p>
+            <p class="abposition"><%=about.description%></p>
             <div class="abtext">天行健,君子以自强不息。地势坤,君子以厚德载物。</div>
         </div>
+        <% } %>
         <!--<div class="search">-->
         <!--<form action="/e/search/index.php" method="post" name="searchform" id="searchform">-->
         <!--<input name="keyboard" id="keyboard" class="input_text" value="请输入关键字"-->

@@ -49,7 +49,8 @@ router.get('/', function (req, res) {
                 flinks: flinks,
                 category: category,
                 pArticle: pArticle,
-                tags: tags
+                tags: tags,
+                about: about
 
             })
         })
