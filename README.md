@@ -59,14 +59,14 @@ node app.js //使用nodemon app.js每次修改后就不需要重启项目
 后端模板：[x-admin](http://x.xuebingsi.com/)
 
 ### 部分截图
-<center>![blog6.png](https://i.loli.net/2018/10/08/5bbabadf754ff.png)</center>
 
-<center>![blog3.png](https://i.loli.net/2018/10/08/5bbabadf9f956.png)</center>
+<center>![blog6.png](https://github.com/ZpsssLll/Fakin-Blog/blob/master/screenshot/5bbabadf754ff.png)</center>
+<center>![blog3.png](https://github.com/ZpsssLll/Fakin-Blog/blob/master/screenshot/5bbabadf9f956.png)</center>
 
-<center>![blog5.png](https://i.loli.net/2018/10/08/5bbabadfadfb1.png)</center>
+<center>![blog5.png](https://github.com/ZpsssLll/Fakin-Blog/blob/master/screenshot/5bbabadfadfb1.png)</center>
 
-<center>![blog4.png](https://i.loli.net/2018/10/08/5bbabadfb11f9.png)</center>
+<center>![blog4.png](https://github.com/ZpsssLll/Fakin-Blog/blob/master/screenshot/5bbabadfb11f9.png)</center>
 
-<center>![blog2.png](https://i.loli.net/2018/10/08/5bbabae0908b7.png)</center>
+<center>![blog2.png](https://github.com/ZpsssLll/Fakin-Blog/blob/master/screenshot/5bbabae0908b7.png)</center>
 
-<center>![blog1.png](https://i.loli.net/2018/10/08/5bbabae0d2301.png)</center>
+<center>![blog1.png](https://github.com/ZpsssLll/Fakin-Blog/blob/master/screenshot/5bbabae0d2301.png)</center>
